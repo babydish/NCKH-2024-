@@ -1,13 +1,21 @@
 <?php
    // controllers/AuthController.php
+require "../config/ConnectDB.php";
 class AuthController {
-    public function login() {
+    public function login($conn) {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $username = $_POST["username"];
             $password = $_POST["password"];
-            $user = Auth::login($username, $password);
-            
-            if ($user) {
+
+            // Thực hiện truy vấn SQL
+            $check_account = "SELECT id, email, mat_khau, ten_nguoidung, vai_tro FROM taikhoan WHERE email='$username' AND mat_khau ='$password'";
+            $result = $conn->query($check_account);
+
+            // Kiểm tra kết quả của truy vấn
+            if ($result && $result->num_rows > 0) {
+                // Lấy thông tin người dùng từ kết quả truy vấn
+                $user = $result->fetch_assoc();
+
                 // Lưu thông tin người dùng vào session
                 $_SESSION['user'] = $user;
 
@@ -19,33 +27,11 @@ class AuthController {
                 echo "Login failed. Check username and/or password.";
             }
         }
-        
+
         // Bao gồm tệp xem đăng nhập
-        require_once "views/login.php";
-    }
-
-    public function logout() {
-        // Xóa session và chuyển hướng người dùng đến trang đăng nhập
-        session_unset();
-        session_destroy();
-        header("Location: login.php");
-        exit;
+        require_once "../views/login.php";
     }
 }
 
-// controllers/DashboardController.php
-class DashboardController {
-    public function index() {
-        // Kiểm tra quyền truy cập của người dùng
-        if ($_SESSION['user']->getRole() !== 'admin') {
-            // Nếu không có quyền truy cập, chuyển hướng về trang không có quyền
-            header("Location: unauthorized.php");
-            exit;
-        }
-
-        // Hiển thị trang dashboard
-        require_once "views/dashboard.php";
-    }
-}
 
 ?>

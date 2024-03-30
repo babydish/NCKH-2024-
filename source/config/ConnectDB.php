@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,18 +8,21 @@
 <body>
     <h2>Database Connection Status</h2>
     <?php
-    // Kiểm tra trạng thái kết nối đến cơ sở dữ liệu
-    $host = 'your_host';
-    $dbname = 'your_database_name';
-    $username = 'your_username';
-    $password = 'your_password';
+    $host = 'localhost'; // Thay đổi tùy thuộc vào máy chủ MySQL của bạn
+    $username = 'root'; // Thay đổi tùy thuộc vào người dùng MySQL của bạn
+    $password = ''; // Thay đổi tùy thuộc vào mật khẩu của người dùng MySQL của bạn
+    $dbname = 'du_lich_an_uong'; // Thay đổi tùy thuộc vào tên cơ sở dữ liệu MySQL của bạn
 
-    try {
-        $connection = new PDO("pgsql:host=$host;dbname=$dbname", $username, $password);
-        echo "<p>Connection to database successful!</p>";
-    } catch (PDOException $e) {
-        echo "<p>Failed to connect to database: " . $e->getMessage() . "</p>";
+    // Kết nối đến cơ sở dữ liệu MySQL
+    $conn = mysqli_connect($host, $username, $password, $dbname);
+
+    // Kiểm tra kết nối
+    if (!$conn) {
+        die("Kết nối không thành công: " . mysqli_connect_error());
     }
+    echo "Kết nối thành công đến cơ sở dữ liệu MySQL.";
+    
+    
     ?>
 </body>
 </html>
